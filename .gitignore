@@ -1,6 +1,8 @@
-# Ignore everything in results folder
 
+
+results/*
 !results/*.csv
+
 
 
 target/
