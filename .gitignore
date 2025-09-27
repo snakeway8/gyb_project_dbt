@@ -1,7 +1,10 @@
 
-
 results/*
+
+
+!results/
 !results/*.csv
+
 
 
 
