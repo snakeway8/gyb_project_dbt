@@ -15,7 +15,7 @@ WITH monthly AS (
         source,
         sales_agent_name,
 
-        -- revenue metrics (aggregated)
+        --  metrics (aggregated)
         COUNT(reference_id) AS number_of_sales,
         SUM(company_revenue) AS company_revenue,
         SUM(total_rebill_amount) AS rebill_revenue,
