@@ -25,8 +25,7 @@ It follows best practices from real-world data teams: staging â†’ fact models â†
 **tests/**  
 - Data quality & integrity checks (e.g., no NULL IDs, valid dates)  
 
-**snapshots/**  
-- Reserved for slowly changing dimensions (not used in this project)  
+
 
 ---
 
