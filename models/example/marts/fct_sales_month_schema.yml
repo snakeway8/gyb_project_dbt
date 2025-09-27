@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: fct_sales_month
+    description: "Monthly aggregated sales fact table with revenue metrics and list of involved agents."
+    columns:
+      - name: month
+        description: "Month of sale (truncated to month)."
+        tests:
+          - not_null
+
+      - name: product_name
+        description: "Name of the sold product."
+        tests:
+          - not_null
+
+      - name: country
+        description: "Country of the buyer."
+        tests:
+          - not_null
+
+      - name: campaign_name
+        description: "Marketing campaign name."
+
+      - name: source
+        description: "Sales source (chat or call)."
+
+      - name: sales_agent_name
+        description: "Name of individual agent assigned to the sale."
+
+      - name: sales_agents_list
+        description: "Comma-separated list of all agents involved in the sale."
+
+      - name: number_of_sales
+        description: "Number of sales in the group."
+        tests:
+          - not_null
+
+      - name: company_revenue
+        description: "Total company revenue including rebills and minus refunds."
+
+      - name: rebill_revenue
+        description: "Revenue from rebills only."
+
+      - name: rebill_count
+        description: "Number of rebills."
+
+      - name: total_returned
+        description: "Total amount returned (refunds or chargebacks)."
+
+      - name: total_discount
+        description: "Total discount amount given."
+
+      - name: total_days_to_return
+        description: "Sum of days between purchase and refund (if applicable)."
