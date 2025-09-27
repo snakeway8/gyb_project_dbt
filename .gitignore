@@ -1,3 +1,11 @@
+# Ignore everything in results folder
+results/*
+
+# But keep CSV files
+!results/*.csv
+
+
+
 target/
 dbt_packages/
 logs/
