@@ -19,11 +19,11 @@ fct_sales_month.sql → monthly aggregated fact table
 
 #### analyses/
 
-monthly_revenue_growth.sql → calculates month-over-month revenue growth 📈
+monthly_revenue_growth.sql → calculates month-over-month revenue growth 
 
-agent_performance.sql → evaluates sales agents’ performance (revenue, discounts, ranking) 👩‍💼
+agent_performance.sql → evaluates sales agents’ performance (revenue, discounts, ranking) 
 
-high_discount_agents.sql → identifies agents giving above-average discounts 💸
+high_discount_agents.sql → identifies agents giving above-average discounts 
 
 #### seeds/
 
