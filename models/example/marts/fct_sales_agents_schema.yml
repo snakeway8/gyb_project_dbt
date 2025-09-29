@@ -1,0 +1,36 @@
+version: 2
+
+
+models:
+  - name: fct_sales_agents
+    description: >
+      Mapping between unique sales (from stg_sales) and agents.
+      Revenue is split equally if multiple agents share the same reference_id.
+    columns:
+      - name: reference_id
+        description: Unique sale reference identifier
+        tests:
+          - not_null
+
+      - name: order_date_kyiv
+        description: Order date in Kyiv timezone
+        tests:
+          - not_null
+
+      - name: sales_agent_name
+        description: Name of the sales agent
+        tests:
+          - not_null
+
+      - name: campaign_name
+        description: Campaign linked to the sale
+
+      - name: company_revenue
+        description: Revenue calculated as total_amount + total_rebill_amount - returned_amount
+        tests:
+          - not_null
+
+      - name: revenue_share
+        description: Revenue allocated to the agent (split equally among all agents for the same reference_id)
+        tests:
+          - not_null
