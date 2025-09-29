@@ -1,7 +1,7 @@
 -- models/marts/fct_sales_month.sql
 -- Monthly aggregated sales fact table
 -- This model aggregates sales from fct_sales on a monthly level
--- and enriches them with a list of all agents involved in each product sale.
+
 
 WITH monthly AS (
     SELECT
@@ -14,10 +14,9 @@ WITH monthly AS (
         campaign_name,
         source,
 
-        -- collect all agents involved into a single string
-        STRING_AGG(DISTINCT sales_agent_name, ', ') AS sales_agents_list,
+        
 
-        -- revenue metrics (aggregated)
+        -- metrics (aggregated)
         COUNT(reference_id) AS number_of_sales,
         SUM(company_revenue) AS company_revenue,
         SUM(total_rebill_amount) AS rebill_revenue,

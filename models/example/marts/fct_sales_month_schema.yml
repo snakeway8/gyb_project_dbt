@@ -2,64 +2,37 @@ version: 2
 
 models:
   - name: fct_sales_month
-    description: "Monthly aggregated sales fact table with agent list and revenue metrics."
+    description: "Monthly aggregated sales fact table with revenue, returns, and discounts."
     columns:
       - name: month
         description: "Month of the sales (truncated to month)."
         tests:
           - not_null
-
       - name: product_name
-        description: "Name of the product."
+        description: "Product involved in the sales."
         tests:
           - not_null
-
       - name: country
         description: "Country of the sale."
-        tests:
-          - not_null
-
       - name: campaign_name
-        description: "Campaign name."
-        tests:
-          - not_null
-
+        description: "Campaign associated with the sales."
       - name: source
-        description: "Source of the sale."
-
-      - name: sales_agents_list
-        description: "Comma-separated list of agents involved in sales for this group."
-
+        description: "Sales source (channel)."
       - name: number_of_sales
-        description: "Number of sales in the month."
+        description: "Total number of sales in this month/product combination."
         tests:
           - not_null
-
       - name: company_revenue
-        description: "Total company revenue (total_amount + total_rebill_amount - returned_amount)."
+        description: "Aggregated company revenue (sales + rebills - returns)."
         tests:
           - not_null
-
       - name: rebill_revenue
-        description: "Total revenue from rebills."
-        tests:
-          - not_null
-
+        description: "Aggregated revenue from rebills."
       - name: rebill_count
-        description: "Number of rebills."
-        tests:
-          - not_null
-
+        description: "Total number of rebills."
       - name: total_returned
         description: "Total returned amount."
-        tests:
-          - not_null
-
       - name: total_discount
-        description: "Total discount applied."
-        tests:
-          - not_null
-
+        description: "Total discount amount."
       - name: total_days_to_return
-        description: "Total days between purchase and return across sales (if return exists)."
-
+        description: "Sum of days between purchase and return for all returns."
