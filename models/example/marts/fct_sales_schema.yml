@@ -3,12 +3,19 @@ version: 2
 models:
   - name: fct_sales
     description: >
-      Transactional fact table (one row = one sale with distinct reference_id + total_amount).
-      This model:
+      Transactional fact table (one row = one sale with unique combination of reference_id,
+      campaign_name and total_amount). This model:
         - calculates company_revenue (total + rebill – returned)
         - adds order/return dates in three time zones (Kyiv, UTC, New York)
         - calculates days_to_return (difference between return and purchase)
-        - selects only distinct rows (removes duplicates)
+        - removes duplicates by keeping the latest order per (reference_id, campaign_name, total_amount)
+        - excludes rows where campaign_name = 'n/a'
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - reference_id
+            - campaign_name
+            - total_amount
     columns:
       - name: reference_id
         description: Unique sale identifier
@@ -19,7 +26,7 @@ models:
       - name: country
         description: Customer country
       - name: campaign_name
-        description: Marketing campaign name
+        description: Marketing campaign name (excluding 'n/a')
       - name: source
         description: Sales source
       - name: sales_agent_name
@@ -50,7 +57,4 @@ models:
         description: Return date in New York timezone
       - name: days_to_return
         description: Days between purchase and return (if return exists)
-<<<<<<< HEAD
-=======
 
->>>>>>> c5133bf47335c3fb465fa074dda1872ea8874ede
