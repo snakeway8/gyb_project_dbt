@@ -13,7 +13,9 @@ WITH monthly AS (
         country,
         campaign_name,
         source,
-        sales_agent_name,
+
+        -- collect all agents involved into a single string
+        STRING_AGG(DISTINCT sales_agent_name, ', ') AS sales_agents_list,
 
         -- revenue metrics (aggregated)
         COUNT(reference_id) AS number_of_sales,
@@ -29,38 +31,9 @@ WITH monthly AS (
         product_name,
         country,
         campaign_name,
-        source,
-        sales_agent_name
-),
-
-agents AS (
-    SELECT
-        -- group by the same keys except agent
-        DATE_TRUNC('month', order_date_kyiv) AS month,
-        product_name,
-        country,
-        campaign_name,
-        source,
-
-        -- collect all agents involved into a single string
-        STRING_AGG(DISTINCT sales_agent_name, ', ') AS sales_agents_list
-    FROM {{ ref('fct_sales') }}
-    GROUP BY 
-        DATE_TRUNC('month', order_date_kyiv),
-        product_name,
-        country,
-        campaign_name,
         source
 )
 
-SELECT 
-    m.*,
-    a.sales_agents_list
-FROM monthly m
-LEFT JOIN agents a
-    ON m.month = a.month
-   AND m.product_name = a.product_name
-   AND m.country = a.country
-   AND m.campaign_name = a.campaign_name
-   AND m.source = a.source
-ORDER BY m.month, m.product_name
+SELECT *
+FROM monthly
+ORDER BY month, product_name
