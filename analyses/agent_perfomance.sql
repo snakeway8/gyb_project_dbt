@@ -7,11 +7,13 @@
 
 SELECT
     sales_agent_name,
-    ROUND(AVG(company_revenue), 2) AS avg_revenue,
+    ROUND(AVG(revenue_share), 2) AS avg_revenue,
     count(reference_id) AS number_of_sales,
     ROUND(AVG(discount_amount), 2) AS avg_discount,
-    ROUND(SUM(company_revenue), 2) AS total_revenue,
-    RANK() OVER (ORDER BY SUM(company_revenue) DESC) AS rank_position
+    ROUND(SUM(revenue_share), 2) AS total_revenue,
+    RANK() OVER (ORDER BY SUM(revenue_share) DESC) AS rank_position
 FROM analytics.fct_sales_agents
+
+GROUP BY sales_agent_name;
 
 GROUP BY sales_agent_name
