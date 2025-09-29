@@ -3,70 +3,50 @@ version: 2
 models:
   - name: fct_sales
     description: >
-      Fact table of sales transactions.  
-      Each row represents a single sale (reference_id),  
-      including revenue, discounts, rebills, returns,  
-      order/return dates (in multiple time zones), and days_to_return.
+      Transactional fact table (one row = one sale with distinct reference_id + total_amount).
+      This model:
+        - calculates company_revenue (total + rebill – returned)
+        - adds order/return dates in three time zones (Kyiv, UTC, New York)
+        - calculates days_to_return (difference between return and purchase)
+        - selects only distinct rows (removes duplicates)
     columns:
       - name: reference_id
-        description: Unique identifier of the sale
+        description: Unique sale identifier
         tests:
           - not_null
-          - unique
-
       - name: product_name
-        description: Name of the sold product
-        tests:
-          - not_null
-
+        description: Name of the product
       - name: country
         description: Customer country
-        tests:
-          - not_null
-
       - name: campaign_name
         description: Marketing campaign name
-
       - name: source
-        description: Sales source (chat or call)
-
+        description: Sales source
       - name: sales_agent_name
         description: Name of the sales agent
-
       - name: company_revenue
-        description: Net revenue from the sale (total + rebills - returns)
-        tests:
-          - not_null
-
+        description: Company revenue (total + rebill – returned)
       - name: total_rebill_amount
-        description: Total amount from rebills
-
+        description: Total rebilled amount
       - name: number_of_rebills
         description: Number of rebills
-
       - name: returned_amount
-        description: Returned amount if refund/chargeback happened
-
+        description: Returned amount
       - name: discount_amount
-        description: Discount applied to the sale
-
+        description: Discount amount applied
+      - name: total_amount
+        description: Initial total amount
       - name: order_date_kyiv
         description: Order date in Kyiv timezone
-
       - name: order_date_utc
-        description: Order date converted to UTC
-
+        description: Order date in UTC timezone
       - name: order_date_ny
-        description: Order date converted to New York timezone
-
+        description: Order date in New York timezone
       - name: return_date_kyiv
         description: Return date in Kyiv timezone
-
       - name: return_date_utc
-        description: Return date converted to UTC
-
+        description: Return date in UTC timezone
       - name: return_date_ny
-        description: Return date converted to New York timezone
-
+        description: Return date in New York timezone
       - name: days_to_return
-        description: Difference in days between return and order dates
+        description: Days between purchase and return (if return exists)

@@ -7,6 +7,7 @@
 --   - calculates company_revenue (total + rebill – returned)
 --   - adds order/return dates in three time zones (Kyiv, UTC, New York)
 --   - calculates days_to_return (difference between return and purchase)
+--   - selects only distinct rows (removes duplicates)
 -- =====================================================
 
 with base as (
@@ -26,6 +27,7 @@ with base as (
         number_of_rebills,
         returned_amount,
         discount_amount,
+        total_amount,
 
         -- dates in different time zones
         order_date_kyiv,
@@ -44,14 +46,11 @@ with base as (
         end as days_to_return
 
     from {{ ref('stg_sales') }}
- 
 )
 
-select *
+select distinct on (reference_id, total_amount) *
 from base
-
-
-
+order by reference_id, total_amount, order_date_kyiv desc
 
 
 
