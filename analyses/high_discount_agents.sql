@@ -4,13 +4,13 @@
 WITH global_discount AS (
     SELECT
         sales_agent_name,
-        ROUND(AVG(total_discount), 2) AS avg_discount,
-        ROUND(AVG(AVG(total_discount)) OVER (), 2) AS global_avg_discount
-    FROM analytics.fct_sales_month
-    WHERE sales_agent_name <> 'n/a'
+        ROUND(AVG(discount_amount), 2) AS avg_discount,
+        ROUND(AVG(AVG(discount_amount)) OVER (), 2) AS global_avg_discount
+    FROM analytics.fct_sales_agents
+  
     GROUP BY sales_agent_name
 )
 SELECT 
-    sales_agent_name   
+    sales_agent_name  
 FROM global_discount
 WHERE avg_discount > global_avg_discount
