@@ -1,11 +1,11 @@
 -- fct_sales
--- One row = one sale (reference_id, campaign_name, total_amount)
+-- One row = one sale (reference_id, total_amount, order_date_kyiv)
 -- This model creates the transactional fact table:
 --   - calculates company_revenue (total + rebill – returned)
 --   - adds order/return dates in three time zones (Kyiv, UTC, New York)
 --   - calculates days_to_return (difference between return and purchase)
---   - removes duplicates by keeping the latest order per (reference_id, campaign_name, total_amount)
---   - excludes rows where campaign_name = 'n/a'
+--   - removes duplicates: if multiple campaign_name values exist for the same
+--     reference_id + total_amount + order_date_kyiv, only one is kept
 -- =====================================================
 
 with base as (
@@ -43,14 +43,13 @@ with base as (
             else null
         end as days_to_return
     from {{ ref('stg_sales') }}
-    where campaign_name <> 'n/a'  
 ),
 dedup as (
     select
         *,
         row_number() over (
-            partition by reference_id, campaign_name, total_amount
-            order by order_date_kyiv desc
+            partition by reference_id, total_amount, order_date_kyiv
+            order by campaign_name  
         ) as rn
     from base
 )
