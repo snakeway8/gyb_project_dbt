@@ -9,13 +9,12 @@ This project demonstrates how raw sales transactions can be transformed into bus
 
 staging/ → cleaned raw data
 
-stg_sales.sql → standardizes and cleans raw sales data
-
-marts/ → fact tables for analytics
-
-fct_sales.sql → transactional fact table (one row = one sale)
-
-fct_sales_month.sql → monthly aggregated fact table
+ `staging/` → cleaned raw data  
+  - `stg_sales.sql` → standardizes and cleans raw sales data  
+  `marts/` → fact tables for analytics  
+  - `fct_sales.sql` → transactional fact table (one row = one sale)  
+  - `fct_sales_month.sql` → monthly aggregated fact table  
+  - `fct_sales_agents.sql` → mapping between sales and agents; splits revenue equally if multiple agents are attached to the same sale  
 
 #### analyses/
 
