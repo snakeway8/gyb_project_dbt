@@ -50,3 +50,7 @@ models:
         description: Return date in New York timezone
       - name: days_to_return
         description: Days between purchase and return (if return exists)
+<<<<<<< HEAD
+=======
+
+>>>>>>> c5133bf47335c3fb465fa074dda1872ea8874ede

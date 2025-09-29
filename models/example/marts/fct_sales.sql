@@ -1,5 +1,3 @@
-
-
 -- =====================================================
 -- fct_sales
 -- One row = one sale (reference_id)
@@ -51,6 +49,17 @@ with base as (
 select distinct on (reference_id, total_amount) *
 from base
 order by reference_id, total_amount, order_date_kyiv desc
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+
+>>>>>>> c5133bf47335c3fb465fa074dda1872ea8874ede
 
 
 
