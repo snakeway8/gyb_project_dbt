@@ -1,51 +1,67 @@
--- models/marts/fct_sales_agents.sql
+-- models/example/marts/fct_sales_agents.sql
 -- =====================================================
--- Fact table: mapping between sales and agents
--- Each sale (reference_id) may have multiple agents.
--- Company revenue is split equally among agents.
+-- Fact table: mapping sales to agents
+-- One row = one agent per unique sale
+-- Revenue is equally split among agents for the same sale
 -- =====================================================
 
-with base as (
-    select
+WITH base_sales AS (
+    SELECT
         reference_id,
         order_date_kyiv,
         sales_agent_name,
         campaign_name,
 
         -- calculate company revenue
-        total_amount + total_rebill_amount - returned_amount as company_revenue,
+        total_amount + total_rebill_amount - returned_amount AS company_revenue,
         discount_amount
-    from analytics.stg_sales
-    where sales_agent_name <> 'n/a'   -- exclude invalid agents
+    FROM {{ ref('stg_sales') }}
+    WHERE sales_agent_name <> 'n/a'   -- exclude invalid agents
 ),
 
-agent_counts as (
-    select
+deduplicated_sales AS (
+    SELECT 
+        *,
+        row_number() OVER (
+            PARTITION BY reference_id, company_revenue, sales_agent_name
+            ORDER BY sales_agent_name  
+        ) AS rn 
+    FROM base_sales
+),
+
+unique_sales AS (
+    SELECT *
+    FROM deduplicated_sales
+    WHERE rn = 1   -- keep only one row per reference_id + company_revenue + sales_agent_name
+),
+
+agent_counts AS (
+    SELECT
         reference_id,
         order_date_kyiv,
         company_revenue,
-        count(distinct sales_agent_name) as agent_count
-    from base
-    group by reference_id, company_revenue, order_date_kyiv
+        COUNT(DISTINCT sales_agent_name) AS agent_count
+    FROM unique_sales
+    GROUP BY reference_id, company_revenue, order_date_kyiv
 ),
 
-final as (
-    select
-        b.reference_id,
-        b.order_date_kyiv,
-        b.sales_agent_name,
-        b.campaign_name,
-        b.company_revenue,
-        b.discount_amount,
+final_sales_agents AS (
+    SELECT
+        u.reference_id,
+        u.order_date_kyiv,
+        u.sales_agent_name,
+        u.campaign_name,
+        u.company_revenue,
+        u.discount_amount,
 
         -- split company revenue equally among agents
-        round(b.company_revenue / ac.agent_count, 2) as revenue_share
-    from base b
-    join agent_counts ac
-      on b.reference_id = ac.reference_id
-     and b.order_date_kyiv = ac.order_date_kyiv
-     and b.company_revenue = ac.company_revenue
+        ROUND(u.company_revenue / ac.agent_count, 2) AS revenue_share
+    FROM unique_sales u
+    JOIN agent_counts ac
+      ON u.reference_id = ac.reference_id
+     AND u.order_date_kyiv = ac.order_date_kyiv
+     AND u.company_revenue = ac.company_revenue
 )
 
-select *
-from final
+SELECT *
+FROM final_sales_agents

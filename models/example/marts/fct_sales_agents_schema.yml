@@ -1,19 +1,19 @@
 version: 2
 
-
 models:
   - name: fct_sales_agents
     description: >
-      Mapping between unique sales (from stg_sales) and agents.
-      Revenue is split equally if multiple agents share the same reference_id.
+      Fact table mapping sales to agents.
+      Each row corresponds to one agent per unique sale (reference_id).
+      Company revenue is equally split among agents if multiple agents share the same sale.
     columns:
       - name: reference_id
-        description: Unique sale reference identifier
+        description: Unique sale identifier
         tests:
           - not_null
 
       - name: order_date_kyiv
-        description: Order date in Kyiv timezone
+        description: Timestamp of the order in Kyiv timezone
         tests:
           - not_null
 
@@ -23,14 +23,21 @@ models:
           - not_null
 
       - name: campaign_name
-        description: Campaign linked to the sale
+        description: Associated campaign name
 
       - name: company_revenue
-        description: Revenue calculated as total_amount + total_rebill_amount - returned_amount
+        description: >
+          Revenue for the sale calculated as:
+          total_amount + total_rebill_amount - returned_amount
         tests:
           - not_null
 
+      - name: discount_amount
+        description: Discount applied to the sale
+
       - name: revenue_share
-        description: Revenue allocated to the agent (split equally among all agents for the same reference_id)
+        description: >
+          Portion of company revenue attributed to each agent,
+          calculated as company_revenue divided by the number of distinct agents.
         tests:
           - not_null
